@@ -1,36 +1,60 @@
-import time
-from openpyxl.reader.excel import load_workbook
+import sys
+import random
+import numpy as np
 
 
-#######
-# CONSTS
-######
-
-input_file = "zeitbogen.xlsx"
-output_file = "output.xlsx"
-
-name = "Klausius Mausius"
-hours_each_week = 11
-days_each_week = 5
-department = "CLOWN SCHOOL"
+def random_hours(days, hours):
+    hours_left = hours
+    result = []
+    for i in range(days-1):
+        h = random.randint(0, min(4, hours_left - (days-i-1)))
+        result.append(h)
+        hours_left -= h
+    result.append(hours_left)
+    return result
 
 
-def input_header_data(sheet):
-    sheet.cell(row=3, column=5).value = name
-    sheet.cell(row=3, column=10).value = department
-    sheet.cell(row=4, column=2).value = hours_each_week
-    sheet.cell(row=4, column=5).value = days_each_week
-    sheet.cell(row=4, column=7).value = time.strftime("%H:%M:%S", time.gmtime(3600 * hours_each_week / days_each_week)) 
-    print(sheet.cell(4, 7).value)
+def increase_hours(array, hours, mi, ma):
+    remaining_hours = hours - sum(array)
+    for j in range(ma):
+        if remaining_hours <= 0:
+            break
+
+        for i in range(len(array)):
+            if remaining_hours <= 0:
+                break
+            if array[i] < ma:
+                array[i] += 1
+                remaining_hours -= 1
 
 
-def main():
-    wb = load_workbook(input_file)
-    for sheet in wb.worksheets:
-        input_header_data(sheet)
-    wb.save(output_file)
+def decrease_hours(array, hours, mi, ma):
+    remaining_hours = hours - sum(array)
+    for j in range(ma):
+        if remaining_hours <= 0:
+            break
+
+        for i in range(len(array)):
+            if remaining_hours <= 0:
+                break
+            if array[i] > mi:
+                array[i] -= 1
+                remaining_hours -= 1
 
 
-if __name__ == "__main__":
-    main()
+def random_hours_dirichlet(days, hours, mi, ma):
+    alphas = np.ones(days)
+    weights = np.random.dirichlet(alphas)
+    unbound =  [int(round(w * hours)) for w in weights]
+    result = [min(ma, max(mi, x)) for x in unbound]
 
+    if sum(result) < hours:
+        increase_hours(result, hours, mi, ma)
+    elif sum(result) > hours:
+        decrease_hours(result, hours, mi, ma)
+
+    return result
+
+
+print(random_hours(int(sys.argv[1]), int(sys.argv[2])))
+print(random_hours_dirichlet(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])))
