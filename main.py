@@ -1,5 +1,6 @@
 import time
 import random
+import datetime
 
 import numpy as np
 from openpyxl.reader.excel import load_workbook
@@ -33,10 +34,17 @@ latest_time = 20
 # UTILS
 #####
 
-def format_time(hours, include_seconds=False) -> str:
-    if include_seconds:
-        return time.strftime("%H:%M:%S", time.gmtime(3600 * hours))
-    return time.strftime("%H:%M", time.gmtime(3600 * hours))
+def format_time(hours:float) -> str:
+    return seconds_to_time(int(3600 * hours))
+
+
+def seconds_to_time(seconds:int):
+    time_delta = datetime.timedelta(seconds=seconds)
+    
+    hours, remainder = divmod(time_delta.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    
+    return datetime.time(hour=hours, minute=minutes)
 
 
 def is_working_day(day:str) -> bool:
@@ -46,12 +54,23 @@ def is_working_day(day:str) -> bool:
 # FUNCS
 #####
 
+def get_time_for_date():
+    seconds = 3600 * (hours_each_week / days_each_week + 0.5)
+    time_delta = datetime.timedelta(seconds=seconds)
+    
+    hours, remainder = divmod(time_delta.seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+
+    return datetime.datetime(1904, 1, 1, hours, minutes, seconds)
+
+
 def set_header_data(sheet):
-    sheet.cell(row=3, column=5).value = name
-    sheet.cell(row=3, column=10).value = department
-    sheet.cell(row=4, column=2).value = hours_each_week
-    sheet.cell(row=4, column=5).value = days_each_week
-    sheet.cell(row=4, column=7).value = format_time(hours_each_week / days_each_week) 
+    sheet.cell(3, 5).value = name
+    sheet.cell(3, 10).value = department
+    sheet.cell(4, 2).value = hours_each_week
+    sheet.cell(4, 5).value = days_each_week
+    sheet.cell(4, 7).value = format_time(hours_each_week / days_each_week)
+    sheet.cell(1, 12).value = get_time_for_date()
 
 
 def get_time_pivot(hours:int) -> int:
@@ -148,6 +167,7 @@ def generate_hours() -> list:
     elif sum(result) > hours:
         decrease_hours(result, hours, mi, ma)
 
+    print(f"Sum of hours: {sum(result)}")
     return result
 
 
