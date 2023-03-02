@@ -29,22 +29,35 @@ min_hours_a_day = 0
 # Both of the following are in hours and refer to working days only
 earliest_time = 8
 latest_time = 20
+# This will make sure that the hours are rounded.
+# For the value 12, this will mean that all: minutes % 5 = 0
+round_hours_by = 6
 
 #####
 # UTILS
 #####
 
-def format_time(hours:float) -> str:
-    return seconds_to_time(int(3600 * hours))
+def format_time(hours:float, round_minutes=False) -> str:
+    return seconds_to_time(int(3600 * hours), round_minutes)
 
 
-def seconds_to_time(seconds:int):
+def seconds_to_time(seconds:int, round_minutes):
     time_delta = datetime.timedelta(seconds=seconds)
     
     hours, remainder = divmod(time_delta.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
+
+    if round_minutes:
+        minutes = round_to_divisible(minutes, int(60 / round_hours_by))
     
     return datetime.time(hour=hours, minute=minutes)
+
+
+def round_to_divisible(x:int, a:int) -> int:
+    o = int(((x + a - 1) // a) * a)
+    if o == 60:
+        return o - a
+    return o
 
 
 def is_working_day(day:str) -> bool:
@@ -74,14 +87,18 @@ def set_header_data(sheet):
 
 
 def get_time_pivot(hours:int) -> int:
-    mi_time = earliest_time + hours / 2
-    ma_time = latest_time - hours / 2
+    mi_time = earliest_time
+    ma_time = latest_time - hours
 
-    return random.uniform(mi_time, ma_time)
+    if ma_time < 0:
+        raise ValueError("The given time frames are too small", ma_time)
+
+    time_pivot = random.uniform(mi_time, ma_time)
+    return round(time_pivot * round_hours_by) / round_hours_by
 
 
-def get_hour_format(time_pivot:float, hours:int) -> str:
-    return format_time(time_pivot + hours / 2)
+def get_hour_format(time_pivot:float, hours:float) -> str:
+    return format_time(time_pivot + hours, True)
 
 
 def set_hour(sheet, hours, day, cell, current_day):
@@ -93,7 +110,7 @@ def set_hour(sheet, hours, day, cell, current_day):
 
     time_pivot = get_time_pivot(hours[current_day])
 
-    sheet.cell(cell[0], cell[1]).value = get_hour_format(time_pivot, -hours[current_day])
+    sheet.cell(cell[0], cell[1]).value = get_hour_format(time_pivot, 0)
     sheet.cell(cell[0], cell[1] + 1).value = get_hour_format(time_pivot, hours[current_day]) 
 
 
@@ -143,11 +160,10 @@ def decrease_hours(array, hours, mi, ma):
                 remaining_hours -= 1
 
 
-def random_hours_dirichlet(days, hours, mi, ma) -> list:
+def random_hours_dirichlet(days, hours, mi, ma) -> np.ndarray:
     alphas = np.ones(days)
     weights = np.random.dirichlet(alphas)
-    unbound =  [int(round(w * hours)) for w in weights]
-    result = [min(ma, max(mi, x)) for x in unbound]
+    result = np.clip(weights * hours, mi, ma)
 
     return result
 
@@ -167,7 +183,10 @@ def generate_hours() -> list:
     elif sum(result) > hours:
         decrease_hours(result, hours, mi, ma)
 
+    result[result < 0.5] = 0
+    result = np.round(result * round_hours_by) / round_hours_by
     print(f"Sum of hours: {sum(result)}")
+    print(result)
     return result
 
 
