@@ -17,7 +17,7 @@ hours_each_week = 11
 days_each_week = 7
 department = "CLOWN SCHOOL"
 
-days_in_year = 365
+year = 2023
 
 #####
 # VARS
@@ -60,8 +60,26 @@ def round_to_divisible(x:int, a:int) -> int:
     return o
 
 
-def is_working_day(day:str) -> bool:
-    return day != ""
+def is_working_day(current_day:int) -> bool:
+    date = get_date_from_current_day(current_day)
+
+    if get_weekday(date.day, date.month) in [5, 6]:
+        return False
+    return True
+
+
+def get_date_from_current_day(current_day:int) -> datetime.date:
+    return datetime.date(year, 1, 1) + datetime.timedelta(days=current_day)
+
+
+def get_weekday(day:int, month:int, year=year) -> int:
+    return datetime.datetime(year, month, day).weekday()
+
+
+def days_in_year(year=year) -> int:
+    first_day = datetime.date(year, 1, 1)
+    last_day = datetime.date(year, 12, 31)
+    return (last_day - first_day).days + 1
 
 #####
 # FUNCS
@@ -105,7 +123,11 @@ def set_hour(sheet, hours, day, cell, current_day):
     if hours[current_day] == 0:
         return
 
-    if not is_working_day(day):
+    d = get_date_from_current_day(current_day)
+    print(f"{d}---{get_weekday(d.day, d.month)}---c_day: {current_day}")
+
+    if not is_working_day(current_day):
+        sheet.cell(cell[0], cell[1]).value = "99:99"
         return
 
     time_pivot = get_time_pivot(hours[current_day])
@@ -169,12 +191,9 @@ def random_hours_dirichlet(days, hours, mi, ma) -> np.ndarray:
 
 
 def generate_hours() -> list:
-    days = int(days_in_year * days_each_week / 7)
-    hours = int(days_in_year * hours_each_week / 7)
+    days = int(days_in_year() * days_each_week / 7)
+    hours = int(days_in_year() * hours_each_week / 7)
     mi, ma = min_hours_a_day, max_hours_a_day
-
-    print(days)
-    print(hours)
 
     result = random_hours_dirichlet(days, hours, mi, ma)
 
@@ -185,8 +204,7 @@ def generate_hours() -> list:
 
     result[result < 0.5] = 0
     result = np.round(result * round_hours_by) / round_hours_by
-    print(f"Sum of hours: {sum(result)}")
-    print(result)
+
     return result
 
 
