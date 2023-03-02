@@ -13,7 +13,7 @@ output_file = "output.xlsx"
 
 name = "Klausius Mausius"
 hours_each_week = 11
-days_each_week = 5
+days_each_week = 7
 department = "CLOWN SCHOOL"
 
 days_in_year = 365
@@ -30,17 +30,13 @@ earliest_time = 8
 latest_time = 20
 
 #####
-# GLOBALS
-#####
-
-current_day = 0
-
-#####
 # UTILS
 #####
 
-def format_time(hours) -> str:
-    return time.strftime("%H:%M:%S", time.gmtime(3600 * hours))
+def format_time(hours, include_seconds=False) -> str:
+    if include_seconds:
+        return time.strftime("%H:%M:%S", time.gmtime(3600 * hours))
+    return time.strftime("%H:%M", time.gmtime(3600 * hours))
 
 
 def is_working_day(day:str) -> bool:
@@ -58,20 +54,46 @@ def set_header_data(sheet):
     sheet.cell(row=4, column=7).value = format_time(hours_each_week / days_each_week) 
 
 
-def set_hours(sheet, hours):
+def get_time_pivot(hours:int) -> int:
+    mi_time = earliest_time + hours / 2
+    ma_time = latest_time - hours / 2
+
+    return random.uniform(mi_time, ma_time)
+
+
+def get_hour_format(time_pivot:float, hours:int) -> str:
+    return format_time(time_pivot + hours / 2)
+
+
+def set_hour(sheet, hours, day, cell, current_day):
+    if hours[current_day] == 0:
+        return
+
+    if not is_working_day(day):
+        return
+
+    time_pivot = get_time_pivot(hours[current_day])
+
+    sheet.cell(cell[0], cell[1]).value = get_hour_format(time_pivot, -hours[current_day])
+    sheet.cell(cell[0], cell[1] + 1).value = get_hour_format(time_pivot, hours[current_day]) 
+
+
+def set_hours(sheet, hours, current_day):
     cell = (7, 3)
     day = sheet.cell(cell[0], cell[1] - 2).value
-    print(current_day)
-    while day != "":
-        if current_day > len(hours):
-            raise ValueError("Not enough values in 'hours' to fill the file.")
-        if is_working_day(day):
-            sheet.cell(cell[0], cell[1]).value = format_time(hours[current_day])
-            #print(sheet.cell(cell[0], cell[1]))
+
+    while day != "" and day != None:
+        if current_day > len(hours) - 1:
+            print("Not enough hours to fill up the file!")
+            break
+
+        set_hour(sheet, hours, day, cell, current_day)
         current_day += 1
 
         cell = (cell[0] + 1, cell[1])
         day = sheet.cell(cell[0], cell[1] - 2).value
+
+    return current_day
 
 
 def increase_hours(array, hours, mi, ma):
@@ -129,14 +151,14 @@ def generate_hours() -> list:
     return result
 
 
-
 def main():
+    current_day = 0
     hours = generate_hours()
-    print(current_day)
+    
     wb = load_workbook(input_file)
     for sheet in wb.worksheets:
         set_header_data(sheet)
-        set_hours(sheet, hours)
+        current_day = set_hours(sheet, hours, current_day)
     wb.save(output_file)
 
 
