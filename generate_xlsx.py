@@ -8,28 +8,6 @@ from openpyxl.reader.excel import load_workbook
 from conf import *
 
 #####
-# UTILS
-#####
-
-def format_time(hours:float) -> str:
-    return seconds_to_time(int(3600 * hours))
-
-
-def seconds_to_time(seconds:int):
-    time_delta = datetime.timedelta(seconds=seconds)
-
-    hours, remainder = divmod(time_delta.seconds, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    
-    return datetime.time(hour=hours, minute=minutes)
-
-
-def days_in_year() -> int:
-    first_day = datetime.date(year, 1, 1)
-    last_day = datetime.date(year, 12, 31)
-    return (last_day - first_day).days + 1
-
-#####
 # FUNCS
 #####
 
@@ -86,7 +64,19 @@ def set_hours(sheet, data):
         set_hour(sheet, hour, cell)
         
 
-def main():
+def convert_info_to_dict(data) -> dict:
+    hours = [sum([float(h[2]) for h in x]) for x in data]
+    monthly_hours_unrounded = [sum(float(h[2]) for h in x) for x in data]
+    monthly_hours = [round(x) for x in monthly_hours_unrounded]
+    info = {
+        "total_hours": round(sum(hours)),
+        "monthly_hours": monthly_hours,
+        "expected_month_hour": hours_each_week * 52 / 12
+    }
+    return info
+
+
+def main() -> dict:
     data = split_data()
     wb = load_workbook(xlsx_input_file)
 
@@ -95,7 +85,12 @@ def main():
         set_hours(sheet, data[index])
     wb.save(xlsx_output_file)
 
+    return convert_info_to_dict(data)
+
 
 if __name__ == "__main__":
-    main()
+    info = main()
+
+    print(info)
+    print("Xlsx generated\n\n")
 
