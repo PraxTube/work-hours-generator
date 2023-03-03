@@ -11,7 +11,7 @@ xlsx_output_file = "output.xlsx"
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = [5, 6]
+black_days = [0, 1, 2]
 days_each_week = 7 - len(black_days)
 
 year = 2023
