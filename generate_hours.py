@@ -94,7 +94,7 @@ def convert_info_to_dict(result_hours, hours, days) -> dict:
 
 def main() -> dict:
     days = int(days_in_year() * (7 - len(black_days)) / 7)
-    hours = hours_each_week * 52
+    hours = hours_each_month * 12
 
     result_hours = generate_hours(days, hours)
     write_output_file("generated_hours.txt", result_hours)

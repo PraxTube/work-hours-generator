@@ -34,7 +34,7 @@ def split_data():
 
 
 def get_time_for_date():
-    seconds = 3600 * (hours_each_week / days_each_week + 0.5)
+    seconds = 3600 * (hours_each_month / 4 / days_each_week + 0.5)
     time_delta = datetime.timedelta(seconds=seconds)
     
     hours, remainder = divmod(time_delta.seconds, 3600)
@@ -46,9 +46,9 @@ def get_time_for_date():
 def set_header_data(sheet):
     sheet.cell(3, 5).value = name
     sheet.cell(3, 10).value = department
-    sheet.cell(4, 2).value = hours_each_week
+    sheet.cell(4, 2).value = hours_each_month / 4
     sheet.cell(4, 5).value = days_each_week
-    sheet.cell(4, 7).value = format_time(hours_each_week / days_each_week)
+    sheet.cell(4, 7).value = format_time(hours_each_month / 4 / days_each_week)
     sheet.cell(1, 12).value = get_time_for_date()
 
 
@@ -71,7 +71,7 @@ def convert_info_to_dict(data) -> dict:
     info = {
         "total_hours": round(sum(hours)),
         "monthly_hours": monthly_hours,
-        "expected_month_hour": hours_each_week * 52 / 12
+        "expected_month_hour": hours_each_month
     }
     return info
 
