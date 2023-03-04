@@ -11,17 +11,20 @@ xlsx_output_file = "output.xlsx"
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = []
+black_days = [3, 4, 5, 6]
+event_days = {
+    "0": 2,
+}
 days_each_week = 7 - len(black_days)
 
 
 year = 2021
 # Change the second entry (month) and the third (day)
-start_date = datetime.date(year, 3, 15)
-end_date = datetime.date(year, 11, 1)
+start_date = datetime.date(year, 1, 1)
+end_date = datetime.date(year, 12, 31)
 # Both of the following refer to working days only
-max_hours = 4
-min_hours = 1
+max_hours = 6
+min_hours = 0
 # This makes sure all hours are above this threshold
 hours_threshold = 0.5
 # This will make sure that the hours are rounded.
@@ -42,6 +45,19 @@ def is_working_day(current_day: int) -> bool:
     if get_weekday(date) in black_days:
         return False
     return True
+
+
+def is_event_day(current_day: int) -> bool:
+    pass
+
+
+def get_event_day_hour(current_day: int) -> float:
+    if not is_event_day(current_day):
+        raise ValueError("The given day is NOT an event_day", current_day)
+
+    date = get_date_from_current_day(current_day)
+    index = get_week_day(date)
+    return event_days[str(index)]
 
 
 def get_date_from_current_day(current_day: int) -> datetime.date:

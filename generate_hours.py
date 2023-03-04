@@ -56,13 +56,18 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
     return result
 
 
+def generate_monthly_hours(monthly_days, month, hours):
+    result = random_hours_dirichlet(monthly_days, hours)
+    match_sum(result, hours_each_month)
+    return result
+
+
 def generate_hours(days) -> np.ndarray:
     monthly_days = days // 12
     result = np.zeros(12 * monthly_days).reshape(12, monthly_days)
 
     for i in range(12):
-        raw_result = random_hours_dirichlet(monthly_days, hours_each_month)
-        result[i] += raw_result
+        result[i] += generate_monthly_hours(monthly_days, i, hours_each_month)
     remaining_days_result = random_hours_dirichlet(
         days % 12, max(0, 12 * hours_each_month - np.sum(result))
     )
