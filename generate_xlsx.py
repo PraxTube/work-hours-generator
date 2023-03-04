@@ -43,18 +43,15 @@ def get_time_for_date():
     return datetime.datetime(1904, 1, 1, hours, minutes, seconds)
 
 
-def set_header_data(sheet):
+def set_header_data(sheet, month):
+    sheet.cell(3, 2).value = datetime.date(year, month, 1)
     sheet.cell(3, 5).value = name
-    sheet.cell(3, 10).value = department
-    sheet.cell(4, 2).value = hours_each_month / 4
-    sheet.cell(4, 5).value = days_each_week
-    sheet.cell(4, 7).value = format_time(hours_each_month / 4 / days_each_week)
-    sheet.cell(1, 12).value = get_time_for_date()
+    sheet.cell(4, 2).value = hours_each_month
+    sheet.cell(4, 5).value = department
 
 
 def set_hour(sheet, hour, cell):
-    sheet.cell(cell[0], cell[1]).value = format_time(start_hour)
-    sheet.cell(cell[0], cell[1] + 1).value = format_time(start_hour + hour)
+    sheet.cell(cell[0], cell[1]).value = format_time(hour)
 
 
 def set_hours(sheet, data):
@@ -81,7 +78,7 @@ def main() -> dict:
     wb = load_workbook(xlsx_input_file)
 
     for index, sheet in enumerate(wb.worksheets):
-        set_header_data(sheet)
+        set_header_data(sheet, index + 1)
         set_hours(sheet, data[index])
     wb.save(xlsx_output_file)
 
