@@ -35,7 +35,8 @@ weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 # UTILS
 #####
 
-def is_working_day(current_day:int) -> bool:
+
+def is_working_day(current_day: int) -> bool:
     date = get_date_from_current_day(current_day)
 
     if get_weekday(date) in black_days:
@@ -43,28 +44,28 @@ def is_working_day(current_day:int) -> bool:
     return True
 
 
-def get_date_from_current_day(current_day:int) -> datetime.date:
+def get_date_from_current_day(current_day: int) -> datetime.date:
     return datetime.date(year, 1, 1) + datetime.timedelta(days=current_day)
 
 
-def get_current_day_from_date(date:datetime.date) -> int:
+def get_current_day_from_date(date: datetime.date) -> int:
     return (date - datetime.date(year, 1, 1)).days
 
 
-def get_weekday(date:datetime.date) -> int:
+def get_weekday(date: datetime.date) -> int:
     return datetime.datetime(date.year, date.month, date.day).weekday()
 
 
-def format_time(hours:float) -> str:
+def format_time(hours: float) -> str:
     return seconds_to_time(int(3600 * hours))
 
 
-def seconds_to_time(seconds:int):
+def seconds_to_time(seconds: int):
     time_delta = datetime.timedelta(seconds=seconds)
 
     hours, remainder = divmod(time_delta.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
-    
+
     return datetime.time(hour=hours, minute=minutes)
 
 
@@ -72,4 +73,3 @@ def days_in_year() -> int:
     first_day = datetime.date(year, 1, 1)
     last_day = datetime.date(year, 12, 31)
     return (last_day - first_day).days + 1
-

@@ -11,13 +11,14 @@ from conf import *
 # FUNCS
 #####
 
+
 def read_data():
     output = []
 
-    with open(raw_data_input_file, 'r') as f:
+    with open(raw_data_input_file, "r") as f:
         for line in f.readlines():
-            line = line.split('#')[0]
-            output.append(line.split(','))
+            line = line.split("#")[0]
+            output.append(line.split(","))
     return output
 
 
@@ -36,7 +37,7 @@ def split_data():
 def get_time_for_date():
     seconds = 3600 * (hours_each_month / 4 / days_each_week + 0.5)
     time_delta = datetime.timedelta(seconds=seconds)
-    
+
     hours, remainder = divmod(time_delta.seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
 
@@ -62,7 +63,7 @@ def set_hours(sheet, data):
         cell = (6 + int(d[1]), 3)
         hour = round(float(d[2]) * round_hour_by) / round_hour_by
         set_hour(sheet, hour, cell)
-        
+
 
 def convert_info_to_dict(data) -> dict:
     hours = [sum([float(h[2]) for h in x]) for x in data]
@@ -71,7 +72,7 @@ def convert_info_to_dict(data) -> dict:
     info = {
         "total_hours": round(sum(hours)),
         "monthly_hours": monthly_hours,
-        "expected_month_hour": hours_each_month
+        "expected_month_hour": hours_each_month,
     }
     return info
 
@@ -93,4 +94,3 @@ if __name__ == "__main__":
 
     print(info)
     print("Xlsx generated\n\n")
-

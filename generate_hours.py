@@ -10,6 +10,7 @@ from conf import *
 # FUNCS
 #####
 
+
 def increase_hours(array, hours):
     remaining_hours = hours - np.sum(array)
     for j in range(max_hours):
@@ -55,7 +56,7 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
     return result
 
 
-def generate_hours(days):
+def generate_hours(days) -> np.ndarray:
     monthly_days = days // 12
     result = np.zeros(12 * monthly_days).reshape(12, monthly_days)
 
@@ -63,7 +64,8 @@ def generate_hours(days):
         raw_result = random_hours_dirichlet(monthly_days, hours_each_month)
         result[i] += raw_result
     remaining_days_result = random_hours_dirichlet(
-        days % 12, max(0, 12 * hours_each_month - np.sum(result)))
+        days % 12, max(0, 12 * hours_each_month - np.sum(result))
+    )
     return np.concatenate((result.flatten(), remaining_days_result))
 
 
@@ -72,11 +74,11 @@ def write_output_file(filename, hours):
     end_index = get_current_day_from_date(end_date)
     remaining_hours = list(hours)
 
-    with open(filename, 'w') as f:
+    with open(filename, "w") as f:
         for i in range(days_in_year()):
             if not is_working_day(i):
                 continue
-            
+
             if len(remaining_hours) <= 0:
                 continue
 
@@ -88,7 +90,7 @@ def write_output_file(filename, hours):
             output = f"{date.month},{date.day},{remaining_hours[0]}#{weekday_map[get_weekday(date)]}\n"
             remaining_hours.pop(0)
             f.write(output)
-    
+
 
 def convert_info_to_dict(result_hours, days) -> dict:
     info = {
@@ -118,4 +120,3 @@ if __name__ == "__main__":
 
     print(info)
     print("Hours generated\n\n")
-
