@@ -11,10 +11,8 @@ from conf import *
 #####
 
 def increase_hours(array, hours):
-    print("---")
     remaining_hours = hours - np.sum(array)
     for j in range(max_hours):
-        print(remaining_hours)
         if remaining_hours <= 0:
             break
 
@@ -52,9 +50,7 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
     alphas = np.ones(days)
     weights = np.random.dirichlet(alphas)
     result = np.clip(weights * hours, min_hours, max_hours)
-    print(result.min())
     match_sum(result, hours)
-    print(result.min())
 
     return result
 
@@ -68,11 +64,12 @@ def generate_hours(days):
         result[i] += raw_result
     remaining_days_result = random_hours_dirichlet(
         days % 12, max(0, 12 * hours_each_month - np.sum(result)))
-    print(remaining_days_result)
     return np.concatenate((result.flatten(), remaining_days_result))
 
 
 def write_output_file(filename, hours):
+    start_index = get_current_day_from_date(start_date)
+    end_index = get_current_day_from_date(end_date)
     remaining_hours = list(hours)
 
     with open(filename, 'w') as f:
@@ -81,6 +78,10 @@ def write_output_file(filename, hours):
                 continue
             
             if len(remaining_hours) <= 0:
+                continue
+
+            if i not in range(start_index, end_index + 1):
+                remaining_hours.pop(0)
                 continue
 
             date = get_date_from_current_day(i)

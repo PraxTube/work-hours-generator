@@ -14,7 +14,11 @@ hours_each_month = 60
 black_days = []
 days_each_week = 7 - len(black_days)
 
+
 year = 2021
+# Change the second entry (month) and the third (day)
+start_date = datetime.date(year, 3, 15)
+end_date = datetime.date(year, 11, 1)
 # Both of the following refer to working days only
 max_hours = 4
 min_hours = 1
@@ -41,6 +45,10 @@ def is_working_day(current_day:int) -> bool:
 
 def get_date_from_current_day(current_day:int) -> datetime.date:
     return datetime.date(year, 1, 1) + datetime.timedelta(days=current_day)
+
+
+def get_current_day_from_date(date:datetime.date) -> int:
+    return (date - datetime.date(year, 1, 1)).days
 
 
 def get_weekday(date:datetime.date) -> int:
