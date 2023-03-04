@@ -14,7 +14,7 @@ hours_each_month = 60
 black_days = [0, 1, 2]
 days_each_week = 7 - len(black_days)
 
-year = 2021
+year = 2023
 # Both of the following refer to working days only
 max_hours = 6
 min_hours = 0

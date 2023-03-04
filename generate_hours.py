@@ -46,19 +46,22 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
     return result
 
 
-def generate_hours(days, hours) -> np.ndarray:
-    """Generate hours in an array with length days
+def match_sum(array, hours):
+    if sum(array) < hours:
+        increase_hours(array, hours)
+    elif sum(array) > hours:
+        decrease_hours(array, hours)
 
-    The result will have clamped values between mi and ma
-    """
-    result = random_hours_dirichlet(days, hours)
 
-    if sum(result) < hours:
-        increase_hours(result, hours)
-    elif sum(result) > hours:
-        decrease_hours(result, hours)
+def generate_hours(days):
+    monthly_days = days // 12
+    result = np.zeros(12 * monthly_days).reshape(12, monthly_days)
 
-    return result
+    for i in range(12):
+        raw_result = random_hours_dirichlet(monthly_days, hours_each_month)
+        match_sum(raw_result, hours_each_month)
+        result[i] += raw_result
+    return result.flatten()
 
 
 def write_output_file(filename, hours):
@@ -78,9 +81,9 @@ def write_output_file(filename, hours):
             f.write(output)
     
 
-def convert_info_to_dict(result_hours, hours, days) -> dict:
+def convert_info_to_dict(result_hours, days) -> dict:
     info = {
-        "expected_hours": hours,
+        "expected_hours": 12 * hours_each_month,
         "actual_hours": round(np.sum(result_hours)),
         "expected_workdays": days,
         "actual_workdays": len(result_hours),
@@ -94,12 +97,11 @@ def convert_info_to_dict(result_hours, hours, days) -> dict:
 
 def main() -> dict:
     days = int(days_in_year() * (7 - len(black_days)) / 7)
-    hours = hours_each_month * 12
 
-    result_hours = generate_hours(days, hours)
+    result_hours = generate_hours(days)
     write_output_file("generated_hours.txt", result_hours)
 
-    return convert_info_to_dict(result_hours, hours, days)
+    return convert_info_to_dict(result_hours, days)
 
 
 if __name__ == "__main__":
