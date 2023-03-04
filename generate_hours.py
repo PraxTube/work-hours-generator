@@ -11,8 +11,10 @@ from conf import *
 #####
 
 def increase_hours(array, hours):
-    remaining_hours = hours - sum(array)
+    print("---")
+    remaining_hours = hours - np.sum(array)
     for j in range(max_hours):
+        print(remaining_hours)
         if remaining_hours <= 0:
             break
 
@@ -25,7 +27,7 @@ def increase_hours(array, hours):
 
 
 def decrease_hours(array, hours):
-    remaining_hours = hours - sum(array)
+    remaining_hours = np.sum(array) - hours
     for j in range(max_hours):
         if remaining_hours <= 0:
             break
@@ -34,23 +36,27 @@ def decrease_hours(array, hours):
             if remaining_hours <= 0:
                 break
             if array[i] > min_hours:
-                array[i] -= max(array[i] - 1, min_hours)
+                array[i] = max(array[i] - 1, min_hours)
                 remaining_hours -= 1
+
+
+def match_sum(array, hours):
+    array[array < hours_threshold] = 0
+    if np.sum(array) < hours:
+        increase_hours(array, hours)
+    elif np.sum(array) > hours:
+        decrease_hours(array, hours)
 
 
 def random_hours_dirichlet(days, hours) -> np.ndarray:
     alphas = np.ones(days)
     weights = np.random.dirichlet(alphas)
     result = np.clip(weights * hours, min_hours, max_hours)
+    print(result.min())
+    match_sum(result, hours)
+    print(result.min())
 
     return result
-
-
-def match_sum(array, hours):
-    if sum(array) < hours:
-        increase_hours(array, hours)
-    elif sum(array) > hours:
-        decrease_hours(array, hours)
 
 
 def generate_hours(days):
@@ -59,9 +65,11 @@ def generate_hours(days):
 
     for i in range(12):
         raw_result = random_hours_dirichlet(monthly_days, hours_each_month)
-        match_sum(raw_result, hours_each_month)
         result[i] += raw_result
-    return result.flatten()
+    remaining_days_result = random_hours_dirichlet(
+        days % 12, max(0, 12 * hours_each_month - np.sum(result)))
+    print(remaining_days_result)
+    return np.concatenate((result.flatten(), remaining_days_result))
 
 
 def write_output_file(filename, hours):

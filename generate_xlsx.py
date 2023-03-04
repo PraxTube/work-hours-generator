@@ -51,6 +51,9 @@ def set_header_data(sheet, month):
 
 
 def set_hour(sheet, hour, cell):
+    if hour <= hours_threshold:
+        return
+
     sheet.cell(cell[0], cell[1]).value = format_time(hour)
 
 

@@ -11,16 +11,18 @@ xlsx_output_file = "output.xlsx"
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = [0, 1, 2]
+black_days = []
 days_each_week = 7 - len(black_days)
 
-year = 2023
+year = 2021
 # Both of the following refer to working days only
-max_hours = 6
-min_hours = 0
+max_hours = 4
+min_hours = 1
+# This makes sure all hours are above this threshold
+hours_threshold = 0.5
 # This will make sure that the hours are rounded.
 # For the value 12, this will mean that all: minutes % 5 = 0
-round_hour_by = 6
+round_hour_by = 4
 start_hour = 10
 
 weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
