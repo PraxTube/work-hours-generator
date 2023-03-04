@@ -11,7 +11,7 @@ xlsx_output_file = "output.xlsx"
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = [3, 4, 5, 6]
+black_days = [5, 6]
 event_days = {
     "0": 2,
 }
@@ -68,7 +68,7 @@ def get_current_day_from_date(date: datetime.date) -> int:
     return (date - datetime.date(year, 1, 1)).days
 
 
-def get_weekday(date: datetime.date) -> int:
+def get_weekday(date) -> int:
     return datetime.datetime(date.year, date.month, date.day).weekday()
 
 
