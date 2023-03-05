@@ -4,8 +4,12 @@ Generate random work hours in a given time frame and output the result in a xlsx
 
 ## Table of Contents
 
-[Installation](#installation)
-[Usage](#usage)
+[Installation](#installation) <br>
+[Usage](#usage) <br>
+[Examples](#examples) <br>
+[Notes on the xlsx output file](#notes-on-the-xlsx-output-file) <br>
+[Read ouput of `main.py`](#read-output-of-main.py) <br>
+[Warnings](#warnings) <br>
 
 ## Installation
 
@@ -122,3 +126,56 @@ event_days = {"0": 2.0, "1": 3.0, "2": 5.5, "6": 2.0}
 
 which will set **only** the event days and not generate any other hours (note that the program will still try to clip the hour values in between
 `min_hours` and `max_hours`, and also try to increase/decrease the hours to your monthly hours).
+
+## Notes on the xlsx output file
+
+The xlsx output file is very barebones and does not have a lot of funtionality. The things it does do automatically:
+
+- Format the weekday and date according to the set date in the header
+- Calculate the sum of the hours worked each month and subtract the expected hours (Uebertrag in cell C38)
+- Calculate the sum of all hours subtracted with the expected hours (last sheed cell C38)
+
+The user doesn't need to interact with the xlsx file directly, unless you set `start_date` or `end_date`, in this case you may need to set the monthly hours in cell B4.
+
+The rounding of the numbers can also be a inaccurate.
+
+## Read output of `main.py`
+
+The following is an example output when `python main.py` is run
+
+```
+The following ratios are 'actual_val/expected_val':
+
+Total sum of hours: 723 / 720
+Total sum of workdays: 231 / 260
+Amount of black days to work days: 104 / 231
+Amount of event days to work days: 52 / 231
+Max hours worked: 6.0 / 6
+Min hours worked (non-zero): 0.508 / 0
+Threshold hours: 0.508 / 0.5
+
+Total hours in the xlsx file: 723
+Jan: 60, + 0
+Feb: 60, + 0
+Mar: 59, - 1
+Apr: 61, + 1
+Mai: 61, + 1
+Jun: 60, + 0
+Jul: 61, + 1
+Aug: 59, - 1
+Sep: 60, + 0
+Oct: 61, + 1
+Nov: 60, + 0
+Dec: 60, + 0
+Start date: 2022-01-01
+End date:   2022-12-31
+```
+
+Most of the output is self-explanatory. The `sum of workdays` refers to days where the number
+of hours is `>0`. The number behind each month represents how many hours of work it contains
+and the difference behind it states how much it deviates from the set amount of hours.
+
+In general it is still best to open the xlsx file and go through a few sheets to make sure
+the generation process was successful.
+
+## Warnings
