@@ -2,13 +2,20 @@
 
 Generate random work hours in a given time frame and output the result in a xlsx file.
 
-## Prerequisites
+## Table of Contents
 
-All that is required to use this repo is an installed version of python.
+[Installation](#installation)
+[Usage](#usage)
 
 ## Installation
 
+### Prerequisites
+
+An installed version of python is required as well as the python libraries inside of
+`requirements.txt`.
 To install and use this repo, run the following commands
+
+### Set up environment
 
 ```
 git clone https://github.com/PraxTube/work-hours-generator.git
@@ -34,6 +41,8 @@ The usage of this repo is pretty straightforward:
 2. Run the command `python main.py`
 
 ### Configuring `conf.py`
+
+The way to costumize your generation settings is by changing the values in the python script `conf.py`.
 
 The **Basic** settings:
 
@@ -66,7 +75,7 @@ For more info on these settings, see the `conf.py` file and the examples below.
 
 ## Examples
 
-The following section will provide some useful examples for setting a `conf.py` file.
+The following section will provide some examples for setting a `conf.py` file.
 
 If you wish to only generate hours from Mon - Fri with a meeting on every Mon that goes for 2 hours, then you can use
 
@@ -77,7 +86,7 @@ black_days = [5, 6]
 event_days = {"0": 2.0}
 ```
 
-Rounding and thresholding your hours can be achieved setting
+Rounding and thresholding your hours can be achieved by setting
 
 ```
 # Will make sure all hours are >=30 minutes
@@ -88,7 +97,7 @@ round_hours_by = 6
 
 note that `hours_threshold` should be in between `[0, 1]` (it can in theory be bigger). If the value is `>1` it can cause issues with the generation process.
 The rounding makes sure that all hours displayed in the xlsx file have a minute count of `n * 60 / round_hours_by`. Note that this can cause a deviation on your
-total hours, so always make sure to check the output and the xlsx file. Also note, because of float inprecision, the rounding can be off by a minute.
+total hours, so always make sure to check the print output and the xlsx file. Also note, because of float inprecision, the rounding can be off by a minute.
 
 Generating hours from a certain date to another certain date (as opposed to generting hours for the whole year), can be achieved by setting
 
@@ -98,7 +107,9 @@ start_date = datetime.date(year, 3, 15)
 end_date = datetime.date(year, 8, 31)
 ```
 
-which in this case, will generate hours from the 15th March to the 31th August. Leap years are being accounted for.
+which in this case, will generate hours from the 15th March to the 31th August. The current implementation will try to fit your monthly hours in any month,
+meaning that it will attempt to fill March in this case with the same amount of hours as any other month. In general, if you wish to generate from specific dates,
+a little bit of manual work is still needed. Leap years are being accounted for.
 
 You can also create the hours completely manually by setting
 

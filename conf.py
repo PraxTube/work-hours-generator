@@ -6,13 +6,13 @@ import datetime
 
 ### BASICS ###
 
-name = "UNKO YAROU"
-department = "TU BERLIN"
+name = "Max Mustermann"
+department = "MA ..."
 hours_each_month = 60
 
-year = 2021
+year = 2022
 # Change the second entry (month) and the third (day)
-start_date = datetime.date(year, 3, 15)
+start_date = datetime.date(year, 1, 1)
 end_date = datetime.date(year, 12, 31)
 
 max_hours = 6
@@ -21,15 +21,16 @@ min_hours = 0
 ### ADVANCED ###
 
 # Values between 0 - 6, representing the weekdays, Mon = 0, Sun = 6
-black_days = []
+black_days = [5, 6]
 # Keys between 0 - 6, Values positive floats, i.e. "0": 2.0
 event_days = {
+    "0": 2,
 }
 # This makes sure all hours are above this threshold
 # by setting the ones below to 0, should be between 0 - 1
 hours_threshold = 0.5
 # This will make sure that the hours are rounded.
-# For the value 12, this means: 60 / 12 = 5
+# For the value 4, this means: 60 / 4 = 15
 round_hour_by = 4
 
 ### DONT CHANGE ###
