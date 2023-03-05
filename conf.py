@@ -26,7 +26,7 @@ days_each_week = 7 - len(black_days)
 
 year = 2021
 # Change the second entry (month) and the third (day)
-start_date = datetime.date(year, 1, 1)
+start_date = datetime.date(year, 3, 15)
 end_date = datetime.date(year, 12, 31)
 # Both of the following refer to working days only
 max_hours = 6

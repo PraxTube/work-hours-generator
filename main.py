@@ -20,6 +20,12 @@ def print_info_hours(info):
     print_msg(
         "Total sum of workdays", info["actual_workdays"], info["expected_workdays"]
     )
+    print_msg(
+        "Amount of black days to work days", info["black_days"], info["actual_workdays"]
+    )
+    print_msg(
+        "Amount of event days to work days", info["event_days"], info["actual_workdays"]
+    )
     print_msg("Max hours worked", info["actual_max_hours"], info["expected_max_hours"])
     print_msg(
         "Min hours worked (non-zero)",
