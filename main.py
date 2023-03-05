@@ -32,6 +32,9 @@ def print_info_hours(info):
         info["actual_min_hours"],
         info["expected_min_hours"],
     )
+    print_msg(
+        "Threshold hours", info["actual_min_hours"], info["threshold"]
+    )
 
 
 def print_info_xlsx(info):
@@ -58,6 +61,8 @@ def print_info_xlsx(info):
         print(
             "{}: {}, {} {}".format(months[i], info["monthly_hours"][i], sign, abs(diff))
         )
+    print("Start date: {}".format(info["start_date"]))
+    print("End date:   {}".format(info["end_date"]))
 
 
 def main():

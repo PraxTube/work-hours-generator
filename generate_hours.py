@@ -130,6 +130,7 @@ def convert_info_to_dict(result_hours, days) -> dict:
         "actual_max_hours": round(max([x.max() for x in result_hours]), 3),
         "expected_min_hours": min_hours,
         "actual_min_hours": round(min([x[x > 0].min(initial=max_hours) for x in result_hours]), 3),
+        "threshold": hours_threshold,
     }
     return info
 
