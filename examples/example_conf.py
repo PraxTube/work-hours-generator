@@ -35,9 +35,9 @@ round_hour_by = 4
 
 ### DONT CHANGE ###
 
-raw_data_input_file = "generated_hours.txt"
+raw_data_input_file = "example_generated_hours.txt"
 xlsx_input_file = "zeitbogen.xlsx"
-xlsx_output_file = "output.xlsx"
+xlsx_output_file = "example_output.xlsx"
 
 days_each_week = 7 - len(black_days)
 
