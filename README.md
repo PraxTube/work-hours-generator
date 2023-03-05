@@ -1,6 +1,6 @@
 # Work Hours Generator
 
-Generate random work hours in a given time frame and output the result in a xlsx file.
+Generate random work hours from a given start date to an end date output the result in a xlsx file.
 
 ## Table of Contents
 
@@ -8,19 +8,16 @@ Generate random work hours in a given time frame and output the result in a xlsx
 [Usage](#usage) <br>
 [Examples](#examples) <br>
 [Notes on the xlsx output file](#notes-on-the-xlsx-output-file) <br>
-[Read ouput of `main.py`](#read-output-of-`main.py`) <br>
+[Output of main.py](#output-of-main.py) <br>
 [Warnings and edge cases](#warnings-and-edge-cases) <br>
 [Further customization](#further-customization) <br>
 
 ## Installation
 
-### Prerequisites
-
 An installed version of python is required as well as the python libraries inside of
 `requirements.txt`.
-To install and use this repo, run the following commands
 
-### Set up environment
+To install and use this repo, run the following commands
 
 ```
 git clone https://github.com/PraxTube/work-hours-generator.git
@@ -47,7 +44,7 @@ The usage of this repo is pretty straightforward:
 
 ### Configuring `conf.py`
 
-The way to costumize your generation settings is by changing the values in the python script `conf.py`.
+The way to costumize your generation is by changing the values in the python script `conf.py`.
 
 The **Basic** settings:
 
@@ -62,7 +59,7 @@ max_hours - The maximum amount of hours workdays can have
 min_hours - The minimum amount of hours workdays should hve
 ```
 
-Most of them are self-explanatory, however it should be noted that `max_hours` and `min_hours` only apply to **workdays**,
+Most of them are self-explanatory, however, it should be noted that `max_hours` and `min_hours` only apply to **workdays**,
 this means if you set `min_hours=1`, only the workdays will have at least 1 hours, **not** all days.
 
 Workdays in this context refer to days that can have `hours>=0`. If a day is a workday or not depends on the specified `black_days` and `event_days`, see below.
@@ -100,9 +97,9 @@ hours_theshold = 0.5
 round_hours_by = 6
 ```
 
-note that `hours_threshold` should be in between `[0, 1]` (it can in theory be bigger). If the value is `>1` it can cause issues with the generation process.
+note that `hours_threshold` should be in between `[0, 1]`. If the value is `>1` it can cause issues with the generation process.
 The rounding makes sure that all hours displayed in the xlsx file have a minute count of `n * 60 / round_hours_by`. Note that this can cause a deviation on your
-total hours, so always make sure to check the print output and the xlsx file. Also note, because of float inprecision, the rounding can be off by a minute.
+total hours, so always make sure to check the print output and the xlsx file to check the amount of hours generated. Also note, because of float inprecision, the rounding can be off by a minute.
 
 Generating hours from a certain date to another certain date (as opposed to generting hours for the whole year), can be achieved by setting
 
@@ -140,7 +137,7 @@ The user doesn't need to interact with the xlsx file directly, unless you set `s
 
 The rounding of the numbers can also be a inaccurate.
 
-## Read output of `main.py`
+## Output of main.py
 
 The following is an example output when `python main.py` is run
 
