@@ -8,8 +8,9 @@ Generate random work hours in a given time frame and output the result in a xlsx
 [Usage](#usage) <br>
 [Examples](#examples) <br>
 [Notes on the xlsx output file](#notes-on-the-xlsx-output-file) <br>
-[Read ouput of `main.py`](#read-output-of-main.py) <br>
-[Warnings](#warnings) <br>
+[Read ouput of `main.py`](#read-output-of-`main.py`) <br>
+[Warnings and edge cases](#warnings-and-edge-cases) <br>
+[Further customization](#further-customization) <br>
 
 ## Installation
 
@@ -131,11 +132,11 @@ which will set **only** the event days and not generate any other hours (note th
 
 The xlsx output file is very barebones and does not have a lot of funtionality. The things it does do automatically:
 
-- Format the weekday and date according to the set date in the header
-- Calculate the sum of the hours worked each month and subtract the expected hours (Uebertrag in cell C38)
-- Calculate the sum of all hours subtracted with the expected hours (last sheed cell C38)
+- Format the weekday (cells in `A`) and date (cells in `B`) according to the date set in the header
+- Calculate the sum of the hours worked each month minus expected hours (cell `C38`)
+- Calculate the sum of all hours minus all expected hours (last sheet cell `C38`)
 
-The user doesn't need to interact with the xlsx file directly, unless you set `start_date` or `end_date`, in this case you may need to set the monthly hours in cell B4.
+The user doesn't need to interact with the xlsx file directly, unless you set `start_date` or `end_date`, in this case you may need to set the monthly hours in cell `B4`.
 
 The rounding of the numbers can also be a inaccurate.
 
@@ -178,4 +179,38 @@ and the difference behind it states how much it deviates from the set amount of 
 In general it is still best to open the xlsx file and go through a few sheets to make sure
 the generation process was successful.
 
-## Warnings
+## Warnings and edge cases
+
+There are almost no checks or warnings in any of the scripts (as of now). The best way to avoid
+problems is to be aware of the edge cases listed below and to check your outpur of `main.py`.
+
+Following edge cases will potentially create errors in the generation process:
+
+- black listing too many days
+- setting `max_hour` too low
+- setting `hours_threshold` too high
+- setting `round_hours_by` to a weird number (should be kept in `[1, 60]`)
+- setting `min_hour >= max_hour`
+
+The output of `main.py` is generally a good indicator to see if the generation went well, in particular
+the actual and expected hours.
+
+## Further customization
+
+In case you wish to costumize your generation even further, here are some tips for you.
+
+### Hour generation
+
+The hours get generated in the `generate_hours.py`, which writes its output to `generated_hours.txt`.
+In order to costumize it, you could write a whole new script from scratch and use the same output format
+as the current `generated_hours.txt`, whish would allow you to still use `generate_xlsx.py` to generate the
+final xlsx file.
+
+### Xlsx generation
+
+If you wish to change the generation of the xlsx file, then you want to modify `generate_xlsx.py`, which reads
+from `generated_hours.txt`. You would only really need to modify `generate_xlsx.py` if you would use a different
+xlsx file. If you only care about the hour generation then you don't need to change anything about the
+`generate_xlsx.py` file.
+
+Feel free to contribute to this repo.
