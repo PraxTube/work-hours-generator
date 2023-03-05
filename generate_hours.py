@@ -95,7 +95,12 @@ def generate_hours(days) -> np.ndarray:
 
     for m in range(len(result)):
         for d in range(len(result[m])):
-            c_day = get_current_day_from_date(datetime.date(year, m + 1, d + 1))
+            date = datetime.date(year, m + 1, d + 1)
+            c_day = get_current_day_from_date(date)
+
+            if not start_date <= date <= end_date:
+                continue
+
             if is_event_day(c_day):
                 result[m][d] = get_event_day_hour(c_day)
             elif is_working_day(c_day):
@@ -124,7 +129,7 @@ def convert_info_to_dict(result_hours, days) -> dict:
         "expected_max_hours": max_hours,
         "actual_max_hours": round(max([x.max() for x in result_hours]), 3),
         "expected_min_hours": min_hours,
-        "actual_min_hours": round(min([x[x > 0].min() for x in result_hours]), 3),
+        "actual_min_hours": round(min([x[x > 0].min(initial=max_hours) for x in result_hours]), 3),
     }
     return info
 

@@ -25,6 +25,7 @@ end_date = datetime.date(year, 12, 31)
 max_hours = 6
 min_hours = 0
 # This makes sure all hours are above this threshold
+# by setting the ones below to 0, should be between 0 - 1
 hours_threshold = 0.5
 # This will make sure that the hours are rounded.
 # For the value 12, this will mean that all: minutes % 5 = 0
@@ -36,7 +37,6 @@ weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 #####
 # UTILS
 #####
-
 
 def is_working_day(current_day: int) -> bool:
     date = get_date_from_current_day(current_day)
@@ -92,3 +92,4 @@ def days_in_year() -> int:
     first_day = datetime.date(year, 1, 1)
     last_day = datetime.date(year, 12, 31)
     return (last_day - first_day).days + 1
+
