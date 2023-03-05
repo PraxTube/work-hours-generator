@@ -4,33 +4,41 @@ import datetime
 # CONSTS
 #####
 
-raw_data_input_file = "generated_hours.txt"
-xlsx_input_file = "zeitbogen.xlsx"
-xlsx_output_file = "output.xlsx"
+### BASICS ###
 
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = []
-event_days = {
-}
-days_each_week = 7 - len(black_days)
-
 
 year = 2021
 # Change the second entry (month) and the third (day)
 start_date = datetime.date(year, 3, 15)
 end_date = datetime.date(year, 12, 31)
-# Both of the following refer to working days only
+
 max_hours = 6
 min_hours = 0
+
+### ADVANCED ###
+
+# Values between 0 - 6, representing the weekdays, Mon = 0, Sun = 6
+black_days = []
+# Keys between 0 - 6, Values positive floats, i.e. "0": 2.0
+event_days = {
+}
 # This makes sure all hours are above this threshold
 # by setting the ones below to 0, should be between 0 - 1
 hours_threshold = 0.5
 # This will make sure that the hours are rounded.
-# For the value 12, this will mean that all: minutes % 5 = 0
+# For the value 12, this means: 60 / 12 = 5
 round_hour_by = 4
-start_hour = 10
+
+### DONT CHANGE ###
+
+raw_data_input_file = "generated_hours.txt"
+xlsx_input_file = "zeitbogen.xlsx"
+xlsx_output_file = "output.xlsx"
+
+days_each_week = 7 - len(black_days)
 
 weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
