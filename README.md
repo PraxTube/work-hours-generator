@@ -8,7 +8,7 @@ Generate random work hours from a given start date to an end date output the res
 [Usage](#usage) <br>
 [Examples](#examples) <br>
 [Notes on the xlsx output file](#notes-on-the-xlsx-output-file) <br>
-[Output of main.py](#output-of-main.py) <br>
+[Output of main](#output-of-main) <br>
 [Warnings and edge cases](#warnings-and-edge-cases) <br>
 [Further customization](#further-customization) <br>
 
@@ -137,7 +137,7 @@ The user doesn't need to interact with the xlsx file directly, unless you set `s
 
 The rounding of the numbers can also be a inaccurate.
 
-## Output of main.py
+## Output of main
 
 The following is an example output when `python main.py` is run
 
