@@ -20,11 +20,20 @@ def print_info_hours(info):
     print_msg(
         "Total sum of workdays", info["actual_workdays"], info["expected_workdays"]
     )
+    print_msg(
+        "Amount of black days to work days", info["black_days"], info["actual_workdays"]
+    )
+    print_msg(
+        "Amount of event days to work days", info["event_days"], info["actual_workdays"]
+    )
     print_msg("Max hours worked", info["actual_max_hours"], info["expected_max_hours"])
     print_msg(
         "Min hours worked (non-zero)",
         info["actual_min_hours"],
         info["expected_min_hours"],
+    )
+    print_msg(
+        "Threshold hours", info["actual_min_hours"], info["threshold"]
     )
 
 
@@ -52,6 +61,8 @@ def print_info_xlsx(info):
         print(
             "{}: {}, {} {}".format(months[i], info["monthly_hours"][i], sign, abs(diff))
         )
+    print("Start date: {}".format(info["start_date"]))
+    print("End date:   {}".format(info["end_date"]))
 
 
 def main():

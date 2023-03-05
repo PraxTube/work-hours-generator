@@ -56,57 +56,81 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
     return result
 
 
-def generate_monthly_hours(monthly_days, month, hours):
-    result = random_hours_dirichlet(monthly_days, hours)
+def generate_monthly_hours(array):
+    days = (array != 0).sum()
+    hours = hours_each_month - (array.sum() + (array == -1).sum())
+    random_array = random_hours_dirichlet(days, hours)
+
+    embedded_random_array = np.zeros_like(array)
+    embedded_random_array[array != 0] = random_array
+
+    array[array == -1] = 0
+    array += embedded_random_array
+    array = np.clip(array, min_hours, max_hours)
+
+    result = array[array != 0]
     match_sum(result, hours_each_month)
-    return result
+    array[array != 0] = result
+
+    return array
 
 
 def generate_hours(days) -> np.ndarray:
-    monthly_days = days // 12
-    result = np.zeros(12 * monthly_days).reshape(12, monthly_days)
+    result = [
+        np.zeros(31),  # January
+        np.zeros(28),  # February (ignoring leap years)
+        np.zeros(31),  # March
+        np.zeros(30),  # April
+        np.zeros(31),  # May
+        np.zeros(30),  # June
+        np.zeros(31),  # July
+        np.zeros(31),  # August
+        np.zeros(30),  # September
+        np.zeros(31),  # October
+        np.zeros(30),  # November
+        np.zeros(31),  # December
+    ]
+    if days_in_year() == 366:
+        result[1] = np.zeros(29)
 
-    for i in range(12):
-        result[i] += generate_monthly_hours(monthly_days, i, hours_each_month)
-    remaining_days_result = random_hours_dirichlet(
-        days % 12, max(0, 12 * hours_each_month - np.sum(result))
-    )
-    return np.concatenate((result.flatten(), remaining_days_result))
+    for m in range(len(result)):
+        for d in range(len(result[m])):
+            date = datetime.date(year, m + 1, d + 1)
+            c_day = get_current_day_from_date(date)
+
+            if not start_date <= date <= end_date:
+                continue
+
+            if is_event_day(c_day):
+                result[m][d] = get_event_day_hour(c_day)
+            elif is_working_day(c_day):
+                result[m][d] = -1
+        result[m] = generate_monthly_hours(result[m])
+    return result
 
 
 def write_output_file(filename, hours):
-    start_index = get_current_day_from_date(start_date)
-    end_index = get_current_day_from_date(end_date)
-    remaining_hours = list(hours)
-
     with open(filename, "w") as f:
-        for i in range(days_in_year()):
-            if not is_working_day(i):
-                continue
-
-            if len(remaining_hours) <= 0:
-                continue
-
-            if i not in range(start_index, end_index + 1):
-                remaining_hours.pop(0)
-                continue
-
-            date = get_date_from_current_day(i)
-            output = f"{date.month},{date.day},{remaining_hours[0]}#{weekday_map[get_weekday(date)]}\n"
-            remaining_hours.pop(0)
-            f.write(output)
+        for m in range(len(hours)):
+            for d in range(len(hours[m])):
+                date = datetime.date(year, m + 1, d + 1)
+                output = f"{date.month},{date.day},{hours[m][d]}#{weekday_map[get_weekday(date)]}\n"
+                f.write(output)
 
 
 def convert_info_to_dict(result_hours, days) -> dict:
     info = {
         "expected_hours": 12 * hours_each_month,
-        "actual_hours": round(np.sum(result_hours)),
+        "actual_hours": round(sum([x.sum() for x in result_hours])),
         "expected_workdays": days,
-        "actual_workdays": len(result_hours),
+        "actual_workdays": sum([(x != 0).sum() for x in result_hours]),
+        "black_days": 52 * len(black_days),
+        "event_days": 52 * len(event_days),
         "expected_max_hours": max_hours,
-        "actual_max_hours": round(np.max(result_hours), 3),
+        "actual_max_hours": round(max([x.max() for x in result_hours]), 3),
         "expected_min_hours": min_hours,
-        "actual_min_hours": round(np.min(result_hours[np.nonzero(result_hours)]), 3),
+        "actual_min_hours": round(min([x[x > 0].min(initial=max_hours) for x in result_hours]), 3),
+        "threshold": hours_threshold,
     }
     return info
 

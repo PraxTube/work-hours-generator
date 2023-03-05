@@ -73,6 +73,8 @@ def convert_info_to_dict(data) -> dict:
         "total_hours": round(sum(hours)),
         "monthly_hours": monthly_hours,
         "expected_month_hour": hours_each_month,
+        "start_date": start_date,
+        "end_date": end_date,
     }
     return info
 
