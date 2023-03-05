@@ -11,9 +11,15 @@ xlsx_output_file = "output.xlsx"
 name = "UNKO YAROU"
 department = "TU BERLIN"
 hours_each_month = 60
-black_days = [5, 6]
+black_days = [0, 1, 2, 3, 4, 5, 6]
 event_days = {
-    "0": 2,
+    "0": 3.1,
+    "1": 1,
+    "2": 0,
+    "3": 2,
+    "4": 0,
+    "5": 4.75,
+    "6": 5.5,
 }
 days_each_week = 7 - len(black_days)
 
@@ -48,7 +54,11 @@ def is_working_day(current_day: int) -> bool:
 
 
 def is_event_day(current_day: int) -> bool:
-    pass
+    date = get_date_from_current_day(current_day)
+
+    if str(get_weekday(date)) in event_days:
+        return True
+    return False
 
 
 def get_event_day_hour(current_day: int) -> float:
@@ -56,7 +66,7 @@ def get_event_day_hour(current_day: int) -> float:
         raise ValueError("The given day is NOT an event_day", current_day)
 
     date = get_date_from_current_day(current_day)
-    index = get_week_day(date)
+    index = get_weekday(date)
     return event_days[str(index)]
 
 

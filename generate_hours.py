@@ -58,18 +58,20 @@ def random_hours_dirichlet(days, hours) -> np.ndarray:
 
 def generate_monthly_hours(array):
     days = (array != 0).sum()
-    hours = hours_each_month - (array.sum() + array[array == -1].sum())
+    hours = hours_each_month - (array.sum() + (array == -1).sum())
     random_array = random_hours_dirichlet(days, hours)
 
-    masked_array = array.reshape(array.shape[0], 1)
-    masked_array[masked_array != 0] = 1
-    masked_matrix = np.tile(masked_array, days).T
+    embedded_random_array = np.zeros_like(array)
+    embedded_random_array[array != 0] = random_array
 
     array[array == -1] = 0
-    array += random_array.dot(masked_matrix)
-
+    array += embedded_random_array
     array = np.clip(array, min_hours, max_hours)
-    match_sum(array, hours_each_month)
+
+    result = array[array != 0]
+    match_sum(result, hours_each_month)
+    array[array != 0] = result
+
     return array
 
 
@@ -96,7 +98,7 @@ def generate_hours(days) -> np.ndarray:
             c_day = get_current_day_from_date(datetime.date(year, m + 1, d + 1))
             if is_event_day(c_day):
                 result[m][d] = get_event_day_hour(c_day)
-            if is_working_day(c_day):
+            elif is_working_day(c_day):
                 result[m][d] = -1
         result[m] = generate_monthly_hours(result[m])
     return result
