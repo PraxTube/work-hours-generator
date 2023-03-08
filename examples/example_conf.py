@@ -41,6 +41,8 @@ xlsx_output_file = "example_output.xlsx"
 
 days_each_week = 7 - len(black_days)
 
+number_of_work_months = sum([1 if start_date.month <= x + 1 <= end_date.month else 0 for x in range(12)])
+
 weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 #####
