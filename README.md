@@ -1,6 +1,6 @@
 # Work Hours Generator
 
-Generate random work hours from a given start date to an end date output the result in a xlsx file.
+Generate random work hours from a given start date to an end date and output the result in a xlsx file.
 
 ## Table of Contents
 
@@ -59,7 +59,7 @@ max_hours - The maximum amount of hours workdays can have
 min_hours - The minimum amount of hours workdays should hve
 ```
 
-Most of them are self-explanatory, however, it should be noted that `max_hours` and `min_hours` only apply to **workdays**,
+Most of them are self-explanatory, however it should be noted, that `max_hours` and `min_hours` only apply to **workdays**,
 this means if you set `min_hours=1`, only the workdays will have at least 1 hours, **not** all days.
 
 Workdays in this context refer to days that can have `hours>=0`. If a day is a workday or not depends on the specified `black_days` and `event_days`, see below.
@@ -125,6 +125,8 @@ event_days = {"0": 2.0, "1": 3.0, "2": 5.5, "6": 2.0}
 which will set **only** the event days and not generate any other hours (note that the program will still try to clip the hour values in between
 `min_hours` and `max_hours`, and also try to increase/decrease the hours to your monthly hours).
 
+See also [examples](https://github.com/PraxTube/work-hours-generator/tree/fix-readme-typos/examples) for a complete example.
+
 ## Notes on the xlsx output file
 
 The xlsx output file is very barebones and does not have a lot of funtionality. The things it does do automatically:
@@ -135,7 +137,7 @@ The xlsx output file is very barebones and does not have a lot of funtionality. 
 
 The user doesn't need to interact with the xlsx file directly, unless you set `start_date` or `end_date`, in this case you may need to set the monthly hours in cell `B4`.
 
-The rounding of the numbers can also be a inaccurate.
+The rounding of the numbers can also be a inaccurate and you should at least check the output to make sure it contains the number of hours you need.
 
 ## Output of main
 
@@ -179,7 +181,7 @@ the generation process was successful.
 ## Warnings and edge cases
 
 There are almost no checks or warnings in any of the scripts (as of now). The best way to avoid
-problems is to be aware of the edge cases listed below and to check your outpur of `main.py`.
+problems is to be aware of the edge cases listed below and to check your output of `main.py`.
 
 Following edge cases will potentially create errors in the generation process:
 
@@ -188,6 +190,7 @@ Following edge cases will potentially create errors in the generation process:
 - setting `hours_threshold` too high
 - setting `round_hours_by` to a weird number (should be kept in `[1, 60]`)
 - setting `min_hour >= max_hour`
+- setting start or end date in the middle of a month
 
 The output of `main.py` is generally a good indicator to see if the generation went well, in particular
 the actual and expected hours.
