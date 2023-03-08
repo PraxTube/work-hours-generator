@@ -56,7 +56,8 @@ def print_info_xlsx(info):
         "Dec",
     ]
     for i in range(len(months)):
-        diff = round(info["monthly_hours"][i] - info["expected_month_hour"])
+        diff = round(info["monthly_hours"][i] - info["expected_month_hour"][i])
+
         sign = "-" if diff < 0 else "+"
         print(
             "{}: {}, {} {}".format(months[i], info["monthly_hours"][i], sign, abs(diff))

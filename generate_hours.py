@@ -120,12 +120,12 @@ def write_output_file(filename, hours):
 
 def convert_info_to_dict(result_hours, days) -> dict:
     info = {
-        "expected_hours": 12 * hours_each_month,
+        "expected_hours": int(hours_each_month * number_of_work_months),
         "actual_hours": round(sum([x.sum() for x in result_hours])),
-        "expected_workdays": days,
+        "expected_workdays": days * number_of_work_months / 12,
         "actual_workdays": sum([(x != 0).sum() for x in result_hours]),
-        "black_days": 52 * len(black_days),
-        "event_days": 52 * len(event_days),
+        "black_days": int(52 * len(black_days) * number_of_work_months / 12),
+        "event_days": int(52 * len(event_days) * number_of_work_months / 12),
         "expected_max_hours": max_hours,
         "actual_max_hours": round(max([x.max() for x in result_hours]), 3),
         "expected_min_hours": min_hours,

@@ -6,14 +6,14 @@ import datetime
 
 ### BASICS ###
 
-name = "Max Mustermann"
-department = "MA"
+name = "Luka Rancic"
+department = "SFB/TRR 109"
 hours_each_month = 60
 
 year = 2022
 # Change the second entry (month) and the third (day)
-start_date = datetime.date(year, 1, 1)
-end_date = datetime.date(year, 12, 31)
+start_date = datetime.date(year, 8, 26)
+end_date = datetime.date(year, 11, 15)
 
 max_hours = 6
 min_hours = 0
@@ -21,7 +21,7 @@ min_hours = 0
 ### ADVANCED ###
 
 # Values between 0 - 6, representing the weekdays, Mon = 0, Sun = 6
-black_days = [5, 6]
+black_days = [6]
 # Keys between 0 - 6, Values positive floats, i.e. "0": 2.0
 event_days = {
     "0": 2,
@@ -40,6 +40,8 @@ xlsx_input_file = "zeitbogen.xlsx"
 xlsx_output_file = "output.xlsx"
 
 days_each_week = 7 - len(black_days)
+
+number_of_work_months = sum([1 if start_date.month <= x + 1 <= end_date.month else 0 for x in range(12)])
 
 weekday_map = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
