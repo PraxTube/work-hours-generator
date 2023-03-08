@@ -47,8 +47,11 @@ def get_time_for_date():
 def set_header_data(sheet, month):
     sheet.cell(3, 2).value = datetime.date(year, month, 1)
     sheet.cell(3, 5).value = name
-    sheet.cell(4, 2).value = hours_each_month
+    sheet.cell(4, 2).value = 0
     sheet.cell(4, 5).value = department
+
+    if start_date.month <= month <= end_date.month:
+        sheet.cell(4, 2).value = hours_each_month
 
 
 def set_hour(sheet, hour, cell):
@@ -69,10 +72,14 @@ def convert_info_to_dict(data) -> dict:
     hours = [sum([float(h[2]) for h in x]) for x in data]
     monthly_hours_unrounded = [sum(float(h[2]) for h in x) for x in data]
     monthly_hours = [round(x) for x in monthly_hours_unrounded]
+    expected_monthly_hours = [
+        hours_each_month if start_date.month <= i + 1 <= end_date.month else 0
+        for i in range(12)
+    ]
     info = {
         "total_hours": round(sum(hours)),
         "monthly_hours": monthly_hours,
-        "expected_month_hour": hours_each_month,
+        "expected_month_hour": expected_monthly_hours,
         "start_date": start_date,
         "end_date": end_date,
     }
